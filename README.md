@@ -1,4 +1,4 @@
-# Reusable Github Workflows
+# (Reusable) Github Action Workflows
 
 This repository contains reusable (callable) [github action workflows](https://github.com/features/actions) that help to reduce boilerplate YAML code that is needed to create and publish K8s artifacts like docker images and helm charts.
 
