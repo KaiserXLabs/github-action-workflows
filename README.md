@@ -4,7 +4,7 @@ This repository contains reusable (callable) [github action workflows](https://g
 
 ## Build and publish docker images to container registry
 
-Workflow name: `KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml`
+Workflow name: `KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main`
 
 Usage:
 
@@ -42,7 +42,7 @@ jobs:
   buildAndPushDockerImage:
     name: "Build and push docker image"
     needs: release-please
-    uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml
+    uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main
     with:
       repository_name: my-service-name
       registry_name: my-docker-registry.example.io
