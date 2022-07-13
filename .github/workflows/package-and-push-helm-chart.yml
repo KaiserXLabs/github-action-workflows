@@ -81,5 +81,5 @@ jobs:
 
     - run: helm package ./charts
 
-    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ env.VERSION_TAG }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path && '/helm' }}" 
+    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ env.VERSION_TAG }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path || '/helm' }}" 
 
