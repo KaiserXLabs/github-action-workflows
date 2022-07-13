@@ -1,0 +1,85 @@
+name: Package and push helm chart
+
+on:
+  workflow_call:
+    inputs:
+      registry_name:
+        required: true
+        type: string
+      release_created:
+        required: true
+        type: boolean
+      version_tag:
+        required: true
+        type: string
+      registry_url_path:
+        required: false
+        type: string
+      image_tag_value_property_path:
+        required: false
+        type: string
+
+    secrets:
+      registry_username:
+        required: true
+      registry_password:
+        required: true
+
+jobs:
+  packageAndPushHelmChart:
+    name: "Package and push helm chart"
+    runs-on: ubuntu-20.04
+    steps:
+    
+    - uses: actions/checkout@v3
+    - name: Helm login
+      run: echo ${{ secrets.registry_password }} | helm registry login ${{ inputs.registry_name }} --username ${{ secrets.registry_username }} --password-stdin
+
+    - name: Generate short SHA
+      run: echo "SHORT_SHA=${SHA:0:7}" >> $GITHUB_ENV
+      env:
+        SHA: ${{github.sha}}
+
+    - name: Generate version tag
+      run: echo "VERSION_TAG=${VERSION}" >> $GITHUB_ENV
+      env:
+        VERSION: ${{ inputs.release_created && inputs.version_tag || format('{0}+{1}', inputs.version_tag, env.SHORT_SHA) }}
+
+    - name: Run read-yaml action
+      id: chart-name
+      uses: KJ002/read-yaml@main
+      with:
+        file: './charts/Chart.yaml'
+        key-path: '["name"]'
+
+    - name: Update app version
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: './charts/Chart.yaml'
+        propertyPath: 'appVersion'
+        value: "${{ env.VERSION_TAG }}"
+        commitChange: false
+        updateFile: true
+
+    - name: Update chart version
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: './charts/Chart.yaml'
+        propertyPath: 'version'
+        value: "${{ env.VERSION_TAG }}"
+        commitChange: false
+        updateFile: true
+
+    - name: Update global image tag
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: './charts/values.yaml'
+        propertyPath: "${{  inputs.image_tag_value_property_path || 'global.image.tag' }}"
+        value: "${{ inputs.release_created && env.VERSION_TAG || env.SHORT_SHA }}"
+        commitChange: false
+        updateFile: true
+
+    - run: helm package ./charts
+
+    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ env.VERSION_TAG }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path && '/helm' }}" 
+

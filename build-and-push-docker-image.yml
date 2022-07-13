@@ -1,0 +1,62 @@
+name: Build and push docker image
+
+on:
+  workflow_call:
+    inputs:
+      repository_name:
+        required: true
+        type: string
+      registry_name:
+        required: true
+        type: string
+      release_created:
+        required: true
+        type: boolean
+      version_tag:
+        required: false
+        type: string
+    secrets:
+      registry_username:
+        required: true
+      registry_password:
+        required: true
+
+jobs:
+  buildAndPushDockerImage:
+    name: "Build and Push"
+    runs-on: ubuntu-20.04
+
+    steps:
+      - run: echo "release_created ${{ inputs.release_created }}"
+      - run: echo "version_tag ${{ inputs.version_tag }}"
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate a short SHA
+        run: echo "SHORT_SHA=${SHA:0:7}" >> $GITHUB_ENV
+        env:
+          SHA: ${{github.sha}}
+
+      - name: Configure Docker
+        run: echo ${{ secrets.registry_password }} | docker login ${{ inputs.registry_name }} --username ${{ secrets.registry_username }} --password-stdin
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Image
+        run: |
+          docker build . --tag ${{ inputs.repository_name }}
+
+      - name: Tag Image with SHA
+        run: |
+          docker tag ${{ inputs.repository_name }} ${{ inputs.registry_name }}/${{ inputs.repository_name }}:${{ env.SHORT_SHA }}
+
+      - name: Tag Image with release version if given
+        if: ${{ inputs.release_created }}
+        run: |
+          docker tag ${{ inputs.repository_name }} ${{ inputs.registry_name }}/${{ inputs.repository_name }}:${{ inputs.version_tag }}
+
+      - name: Push Images
+        run: |
+          docker push ${{ inputs.registry_name }}/${{ inputs.repository_name }} --all-tags
