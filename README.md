@@ -2,7 +2,7 @@
 
 This repository contains reusable (callable) [github action workflows](https://github.com/features/actions) that help to reduce boilerplate YAML code that is needed to create and publish K8s artifacts like docker images and helm charts.
 
-## Build and publish docker images to container registry
+## Build and publish docker images
 
 Workflow name: `KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main`
 
@@ -45,6 +45,37 @@ jobs:
     uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main
     with:
       repository_name: my-service-name
+      registry_name: my-docker-registry.example.io
+      release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
+      version_tag: ${{ needs.release-please.outputs.version_tag }}
+    secrets:
+      registry_username: ${{ secrets.REGISTRY_USERNAME }}
+      registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+```
+
+## Package and publish helm charts
+
+Workflow name: `KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main`
+
+Usage:
+
+```yaml
+name: "Push to main"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    # see above what this job is doing in detail
+
+  packageAndPushHelmChart:
+    name: "Build and push helm chart"
+    needs: release-please
+    uses: KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main
+    with:
       registry_name: my-docker-registry.example.io
       release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
       version_tag: ${{ needs.release-please.outputs.version_tag }}
