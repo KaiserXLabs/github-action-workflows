@@ -44,10 +44,10 @@ jobs:
     needs: release-please
     uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main
     with:
-      repository_name: my-service-name
-      registry_name: my-docker-registry.example.io
-      release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
-      version_tag: ${{ needs.release-please.outputs.version_tag }}
+      repository_name: my-service-name # required
+      registry_name: my-docker-registry.example.io # required
+      release_created: ${{ needs.release-please.outputs.release_created == 'true' }} # required
+      version_tag: ${{ needs.release-please.outputs.version_tag }} # only required if release_created is true
     secrets:
       registry_username: ${{ secrets.REGISTRY_USERNAME }}
       registry_password: ${{ secrets.REGISTRY_PASSWORD }}
@@ -76,9 +76,13 @@ jobs:
     needs: release-please
     uses: KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main
     with:
-      registry_name: my-docker-registry.example.io
-      release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
-      version_tag: ${{ needs.release-please.outputs.version_tag }}
+      registry_name: my-docker-registry.example.io # required
+      release_created: ${{ needs.release-please.outputs.release_created == 'true' }} # required
+      version_tag: ${{ needs.release-please.outputs.version_tag }} # required
+      registry_url_path: /my-helm-charts # optional, default: /helm
+      image_tag_value_property_path: image.tag # optional, default: global.image.tag
+      helm_chart_root_path: ./my-helm-chart # optional, default: ./charts
+
     secrets:
       registry_username: ${{ secrets.REGISTRY_USERNAME }}
       registry_password: ${{ secrets.REGISTRY_PASSWORD }}
