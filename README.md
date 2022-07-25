@@ -27,14 +27,14 @@ Builds a `Dockerfile` and pushes the built container to the passed repository at
 
 ### Secrets
 
-| Input               | Required | Description                           |
+| Secret              | Required | Description                           |
 | ------------------- | -------- | ------------------------------------- |
 | `registry_username` | yes      | The container registry login user     |
 | `registry_password` | yes      | The container registey login password |
 
 ### Outputs
 
-| Input       | Always | Description                                                                                       |
+| Output      | Always | Description                                                                                       |
 | ----------- | ------ | ------------------------------------------------------------------------------------------------- |
 | `image_tag` | yes    | Either the short SHA if `release_created` is `false` or the `version_tag` (see [Inputs](#inputs)) |
 
@@ -80,7 +80,6 @@ jobs:
       registry_name: ghcr.io/${{ github.repository_owner }}
       release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
       version_tag: ${{ needs.release-please.outputs.version_tag }}
-      version_tag: ${{ needs.release-please.outputs.version_tag }}
       dockerfile_path: hello-world/Dockerfile
       dockerfile_context_path: hello-world
     secrets:
@@ -97,6 +96,29 @@ jobs:
 `KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main`
 
 <!-- x-release-please-end -->
+
+### Inputs
+
+| Input                           | Type    | Required                       | Description                                                                                                                                                               |
+| ------------------------------- | ------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `registry_name`                 | string  | yes                            | The name of the oci registry, for example `ghcr.io/kaiserxlabs`                                                                                                           |
+| `release_created`               | boolean | yes                            | Whether this workflow should push a pre-release appending the short SHA to the `version_tag` (for example `1.1.3+9a34175`) or push a release using only the `version_tag` |
+| `version_tag`                   | string  | only if release_created is yes | The version tag if `release_created` is `true`                                                                                                                            |
+| `registry_url_path`             | string  | no                             | Optional repository path at the oci registry. Default value is `/helm`                                                                                                    |
+| `image_tag_value_property_path` | string  | no                             | Optional image tag path. Default value is `global.image.tag`                                                                                                              |
+| `helm_chart_root_path`          | string  | no                             | Optional helm chart path relative to the repository root. Default value is `./charts`                                                                                     |
+
+### Secrets
+
+| Secret              | Required | Description                           |
+| ------------------- | -------- | ------------------------------------- |
+| `registry_username` | yes      | The container registry login user     |
+| `registry_password` | yes      | The container registey login password |
+
+### Outputs
+
+| Output | Always | Description |
+| ------ | ------ | ----------- |
 
 ### Usage
 
