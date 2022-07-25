@@ -31,3 +31,11 @@ jobs:
     secrets:
       registry_username: '$'
       registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  validate-build-and-push:
+    needs:
+    - lower-case-owner-name
+    - test-build-and-push
+    runs-on: ubuntu-latest
+    steps:
+    - run: 'curl -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/orgs/${{ needs.lower-case-owner-name.outputs.lower_case_github_repository_owner }}/packages'
