@@ -1,0 +1,21 @@
+name: 'Pull request'
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test-build-and-push:
+    name: "Test build and push docker image"
+    uses: ./.github/workflows/build-and-push-docker-image.yml
+    with:
+      repository_name: hello
+      registry_name: ghcr.io/${{ github.repository_owner }}
+      release_created: false
+      version_tag: 0.0.0
+      dockerfile_path: test/Dockerfile
+      dockerfile_context_path: test
+    secrets:
+      registry_username: '$'
+      registry_password: ${{ secrets.GITHUB_TOKEN }}

@@ -15,11 +15,18 @@ on:
       version_tag:
         required: false
         type: string
+      dockerfile_path:
+        required: false
+        type: string
+        default: "./Dockerfile"
+      dockerfile_context_path:
+        required: false
+        type: string
+        default: "."
     outputs:
       image_tag:
         description: "Either the short SHA if release_created is false or version_tag"
         value: ${{ jobs.buildAndPushDockerImage.steps.image_tag.outputs.value }}
-
     secrets:
       registry_username:
         required: true
@@ -54,7 +61,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build . --tag ${{ inputs.repository_name }}
+          docker build --file ${{ inputs.dockerfile_path }} --tag ${{ inputs.repository_name }} ${{ inputs.dockerfile_context_path }}
 
       - name: Tag image with version_tag if given
         run: |
