@@ -4,6 +4,8 @@ This repository contains reusable (callable) [github action workflows](https://g
 
 ## Build and publish docker images
 
+Builds a `Dockerfile` and pushes the built container to the passed repository at the passed container registry.
+
 ### Workflow name
 
 <!-- x-release-please-start-version -->
@@ -32,9 +34,9 @@ This repository contains reusable (callable) [github action workflows](https://g
 
 ### Outputs
 
-| Input       | Always | Description                                                                                      |
-| ----------- | ------ | ------------------------------------------------------------------------------------------------ |
-| `image_tag` | yes    | Either the short SHA if `release_created` is `false` or the `version_tag`(see [Inputs](#inputs)) |
+| Input       | Always | Description                                                                                       |
+| ----------- | ------ | ------------------------------------------------------------------------------------------------- |
+| `image_tag` | yes    | Either the short SHA if `release_created` is `false` or the `version_tag` (see [Inputs](#inputs)) |
 
 ### Usage
 
