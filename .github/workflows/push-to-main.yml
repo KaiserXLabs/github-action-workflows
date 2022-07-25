@@ -13,3 +13,5 @@ jobs:
       with:
         release-type: simple
         package-name: github-action-workflows
+        extra-files: |
+          README.md
