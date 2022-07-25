@@ -1,0 +1,33 @@
+name: 'Pull request'
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  lower-case-owner-name:
+    outputs:
+      lower_case_github_repository_owner: ${{ steps.lower_case_github_repository_owner.outputs.value }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: lower_case_github_repository_owner
+        run: |
+          echo "::set-output name=value::${GITHUB_REPOSITORY_OWNER,,}"
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+  test-build-and-push:
+    needs:
+    - lower-case-owner-name
+    name: "Test build and push docker image"
+    uses: ./.github/workflows/build-and-push-docker-image.yml
+    with:
+      repository_name: hello
+      registry_name: ghcr.io/${{ needs.lower-case-owner-name.outputs.lower_case_github_repository_owner }}
+      release_created: false
+      version_tag: 0.0.0
+      dockerfile_path: test/Dockerfile
+      dockerfile_context_path: test
+    secrets:
+      registry_username: '$'
+      registry_password: ${{ secrets.GITHUB_TOKEN }}

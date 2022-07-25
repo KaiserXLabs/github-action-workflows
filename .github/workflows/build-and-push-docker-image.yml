@@ -15,6 +15,18 @@ on:
       version_tag:
         required: false
         type: string
+      dockerfile_path:
+        required: false
+        type: string
+        default: "./Dockerfile"
+      dockerfile_context_path:
+        required: false
+        type: string
+        default: "."
+    outputs:
+      image_tag:
+        description: "Either the short SHA if release_created is false or version_tag"
+        value: ${{ jobs.buildAndPushDockerImage.steps.image_tag.outputs.value }}
     secrets:
       registry_username:
         required: true
@@ -34,29 +46,27 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Generate a short SHA
-        run: echo "SHORT_SHA=${SHA:0:7}" >> $GITHUB_ENV
-        env:
-          SHA: ${{github.sha}}
+        id: short_sha
+        run: echo "::set-output name=value::$(git rev-parse --short ${{ github.sha }})"
 
-      - name: Configure Docker
+      - name: "Generate the image tag"
+        id: image_tag
+        run: echo "::set-output name=value::${{ inputs.release_created && inputs.version_tag || steps.short_sha.outputs.value }}"
+
+      - name: Configure docker
         run: echo ${{ secrets.registry_password }} | docker login ${{ inputs.registry_name }} --username ${{ secrets.registry_username }} --password-stdin
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build Image
+      - name: Build image
         run: |
-          docker build . --tag ${{ inputs.repository_name }}
+          docker build --file ${{ inputs.dockerfile_path }} --tag ${{ inputs.repository_name }} ${{ inputs.dockerfile_context_path }}
 
-      - name: Tag Image with SHA
+      - name: Tag image with version_tag if given
         run: |
-          docker tag ${{ inputs.repository_name }} ${{ inputs.registry_name }}/${{ inputs.repository_name }}:${{ env.SHORT_SHA }}
+          docker tag ${{ inputs.repository_name }} ${{ inputs.registry_name }}/${{ inputs.repository_name }}:${{ steps.image_tag.outputs.value }}
 
-      - name: Tag Image with release version if given
-        if: ${{ inputs.release_created }}
-        run: |
-          docker tag ${{ inputs.repository_name }} ${{ inputs.registry_name }}/${{ inputs.repository_name }}:${{ inputs.version_tag }}
-
-      - name: Push Images
+      - name: Push image
         run: |
           docker push ${{ inputs.registry_name }}/${{ inputs.repository_name }} --all-tags
