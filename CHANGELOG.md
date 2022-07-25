@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v1.0.0...v2.0.0) (2022-07-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* container images are only tagged with the determined image_tag
+
+### Features
+
+* add image_tag output to build and push docker image ([#2](https://github.com/KaiserXLabs/github-action-workflows/issues/2)) ([7c40fab](https://github.com/KaiserXLabs/github-action-workflows/commit/7c40fabff8066cab0a135ffb882b63c0a744c504))
+* **ci:** add auto versioning to readme ([8c5cdc5](https://github.com/KaiserXLabs/github-action-workflows/commit/8c5cdc5a3f2124fcb2fd308b473e1af3464d43e0))
+* container images are only tagged with the determined image_tag ([7c40fab](https://github.com/KaiserXLabs/github-action-workflows/commit/7c40fabff8066cab0a135ffb882b63c0a744c504))
+
 ## 1.0.0 (2022-07-14)
 
 
