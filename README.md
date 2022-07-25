@@ -18,8 +18,8 @@ Builds a `Dockerfile` and pushes the built container to the passed repository at
 
 | Input                     | Type    | Required                       | Description                                                                                                            |
 | ------------------------- | ------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `registry_name`           | string  | yes                            | The name of the container registry                                                                                     |
-| `repository_name`         | string  | yes                            | The name of the container repository at the registry                                                                   |
+| `registry_name`           | string  | yes                            | The name of the container registry, for example `ghcr.io/kaiserxlabs`                                                  |
+| `repository_name`         | string  | yes                            | The name of the repository at the container registry, for example `hello`                                              |
 | `release_created`         | boolean | yes                            | Whether this workflow should push a pre-release using the short SHA as image tag or push a release using `version_tag` |
 | `version_tag`             | string  | only if release_created is yes | The version tag if `release_created` is `true`                                                                         |
 | `dockerfile_path`         | string  | no                             | Optional `Dockerfile` file path relative to the repository root. Default value is `./Dockerfile`                       |
