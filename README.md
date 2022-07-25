@@ -4,9 +4,39 @@ This repository contains reusable (callable) [github action workflows](https://g
 
 ## Build and publish docker images
 
-Workflow name: `KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main`
+### Workflow name
 
-Usage:
+<!-- x-release-please-start-version -->
+
+`KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v1.0.0`
+
+<!-- x-release-please-end -->
+
+### Inputs
+
+| Input                     | Type    | Required                       | Description                                                                                                            |
+| ------------------------- | ------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `registry_name`           | string  | yes                            | The name of the container registry                                                                                     |
+| `repository_name`         | string  | yes                            | The name of the container repository at the registry                                                                   |
+| `release_created`         | boolean | yes                            | Whether this workflow should push a pre-release using the short SHA as image tag or push a release using `version_tag` |
+| `version_tag`             | string  | only if release_created is yes | The version tag if `release_created` is `true`                                                                         |
+| `dockerfile_path`         | string  | no                             | Optional `Dockerfile` file path relative to the repository root. Default value is `./Dockerfile`                       |
+| `dockerfile_context_path` | string  | no                             | Optional context path relative to the repository root. Default value is `.`                                            |
+
+### Secrets
+
+| Input               | Required | Description                           |
+| ------------------- | -------- | ------------------------------------- |
+| `registry_username` | yes      | The container registry login user     |
+| `registry_password` | yes      | The container registey login password |
+
+### Outputs
+
+| Input       | Always | Description                                                                                      |
+| ----------- | ------ | ------------------------------------------------------------------------------------------------ |
+| `image_tag` | yes    | Either the short SHA if `release_created` is `false` or the `version_tag`(see [Inputs](#inputs)) |
+
+### Usage
 
 ```yaml
 name: "Push to main"
@@ -42,7 +72,7 @@ jobs:
   buildAndPushDockerImage:
     name: "Build and push docker image"
     needs: release-please
-    uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@main
+    uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v1.0.0 # x-release-please-version
     with:
       repository_name: my-service-name # required
       registry_name: my-docker-registry.example.io # required
@@ -55,9 +85,15 @@ jobs:
 
 ## Package and publish helm charts
 
-Workflow name: `KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main`
+### Workflow name
 
-Usage:
+<!-- x-release-please-start-version -->
+
+`KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main`
+
+<!-- x-release-please-end -->
+
+### Usage
 
 ```yaml
 name: "Push to main"
@@ -74,7 +110,7 @@ jobs:
   packageAndPushHelmChart:
     name: "Build and push helm chart"
     needs: release-please
-    uses: KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main
+    uses: KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@v1.0.0 # x-release-please-version
     with:
       registry_name: my-docker-registry.example.io # required
       release_created: ${{ needs.release-please.outputs.release_created == 'true' }} # required
