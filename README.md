@@ -19,7 +19,7 @@ Builds a `Dockerfile` and pushes the built container to the passed repository at
 | Input                     | Type    | Required                       | Description                                                                                                            |
 | ------------------------- | ------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | `registry_name`           | string  | yes                            | The name of the container registry, for example `ghcr.io/kaiserxlabs`                                                  |
-| `repository_name`         | string  | yes                            | The name of the repository at the container registry, for example `hello`                                              |
+| `repository_name`         | string  | yes                            | The name of the repository at the container registry, for example `hello-world`                                        |
 | `release_created`         | boolean | yes                            | Whether this workflow should push a pre-release using the short SHA as image tag or push a release using `version_tag` |
 | `version_tag`             | string  | only if release_created is yes | The version tag if `release_created` is `true`                                                                         |
 | `dockerfile_path`         | string  | no                             | Optional `Dockerfile` file path relative to the repository root. Default value is `./Dockerfile`                       |
@@ -76,10 +76,13 @@ jobs:
     needs: release-please
     uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v1.0.0 # x-release-please-version
     with:
-      repository_name: my-service-name # required
-      registry_name: my-docker-registry.example.io # required
-      release_created: ${{ needs.release-please.outputs.release_created == 'true' }} # required
-      version_tag: ${{ needs.release-please.outputs.version_tag }} # only required if release_created is true
+      repository_name: hello-world
+      registry_name: ghcr.io/${{ github.repository_owner }}
+      release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
+      version_tag: ${{ needs.release-please.outputs.version_tag }}
+      version_tag: ${{ needs.release-please.outputs.version_tag }}
+      dockerfile_path: hello-world/Dockerfile
+      dockerfile_context_path: hello-world
     secrets:
       registry_username: ${{ secrets.REGISTRY_USERNAME }}
       registry_password: ${{ secrets.REGISTRY_PASSWORD }}
