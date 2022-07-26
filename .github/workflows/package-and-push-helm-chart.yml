@@ -15,12 +15,23 @@ on:
       registry_url_path:
         required: false
         type: string
-      image_tag_value_property_path:
+      image_tag_value_property_path: # deprecated
+        required: false
+        type: string
+      image_tag_property_path:
         required: false
         type: string
       helm_chart_root_path:
         required: false
         type: string
+        default: charts
+      image_repository:
+        required: false
+        type: string
+      image_repository_property_path:
+        required: false
+        type: string
+        default: image.repository
 
     secrets:
       registry_username:
@@ -38,56 +49,57 @@ jobs:
     - name: Helm login
       run: echo ${{ secrets.registry_password }} | helm registry login ${{ inputs.registry_name }} --username ${{ secrets.registry_username }} --password-stdin
 
-    - name: Generate short SHA
-      run: echo "SHORT_SHA=${SHA:0:7}" >> $GITHUB_ENV
-      env:
-        SHA: ${{github.sha}}
+    - id: short_sha
+      run: echo "::set-output name=value::$(git rev-parse --short ${{ github.sha }})"
 
-    - name: Generate version tag
-      run: echo "VERSION_TAG=${VERSION}" >> $GITHUB_ENV
-      env:
-        VERSION: ${{ inputs.release_created && inputs.version_tag || format('{0}+{1}', inputs.version_tag, env.SHORT_SHA) }}
-
-    - name: Generate chart root path
-      run: echo "CHART_ROOT_PATH=${CHART_ROOT_PATH}" >> $GITHUB_ENV
-      env:
-        CHART_ROOT_PATH: ${{ inputs.helm_chart_root_path || './charts' }}
+    - id: final_version_tag
+      run: echo "::set-output name=value::${{ inputs.release_created && inputs.version_tag || format('{0}+{1}', inputs.version_tag, steps.short_sha.outputs.value) }}"
 
     - name: Run read-yaml action
       id: chart-name
       uses: KJ002/read-yaml@main
       with:
-        file: "${{ env.CHART_ROOT_PATH }}/Chart.yaml"
+        file: "${{ inputs.helm_chart_root_path }}/Chart.yaml"
         key-path: '["name"]'
 
     - name: Update app version
       uses: fjogeleit/yaml-update-action@main
       with:
-        valueFile: "${{ env.CHART_ROOT_PATH }}/Chart.yaml"
+        valueFile: "${{ inputs.helm_chart_root_path }}/Chart.yaml"
         propertyPath: 'appVersion'
-        value: "${{ env.VERSION_TAG }}"
+        value: "${{ steps.final_version_tag.outputs.value }}"
         commitChange: false
         updateFile: true
 
     - name: Update chart version
       uses: fjogeleit/yaml-update-action@main
       with:
-        valueFile: "${{ env.CHART_ROOT_PATH }}/Chart.yaml"
+        valueFile: "${{ inputs.helm_chart_root_path }}/Chart.yaml"
         propertyPath: 'version'
-        value: "${{ env.VERSION_TAG }}"
+        value: "${{ steps.final_version_tag.outputs.value }}"
         commitChange: false
         updateFile: true
 
-    - name: Update global image tag
+    - name: Update image tag
       uses: fjogeleit/yaml-update-action@main
       with:
-        valueFile: "${{ env.CHART_ROOT_PATH }}/values.yaml"
-        propertyPath: "${{ inputs.image_tag_value_property_path || 'global.image.tag' }}"
-        value: "${{ inputs.release_created && env.VERSION_TAG || env.SHORT_SHA }}"
+        valueFile: "${{ inputs.helm_chart_root_path }}/values.yaml"
+        propertyPath: "${{ inputs.image_tag_property_path || inputs.image_tag_value_property_path || 'global.image.tag' }}"
+        value: "${{ inputs.release_created && steps.final_version_tag.outputs.value || steps.short_sha.outputs.value }}"
         commitChange: false
         updateFile: true
 
-    - run: helm package ${{ env.CHART_ROOT_PATH }}
+    - name: Update image repository if set
+      if: ${{ inputs.image_repository_property_path && inputs.image_repository }}
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: "${{ inputs.helm_chart_root_path }}/values.yaml"
+        propertyPath: "${{ image_repository_property_path }}"
+        value: "${{ inputs.image_repository }}"
+        commitChange: false
+        updateFile: true
 
-    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ env.VERSION_TAG }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path || '/helm' }}" 
+    - run: helm package ${{ inputs.helm_chart_root_path }}
+
+    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ steps.final_version_tag.outputs.value }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path || '/helm' }}" 
 
