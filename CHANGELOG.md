@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.0.0...v2.1.0) (2022-07-26)
+
+
+### Features
+
+* **helm:** add `chart_tag` output ([#4](https://github.com/KaiserXLabs/github-action-workflows/issues/4)) ([9cdc42b](https://github.com/KaiserXLabs/github-action-workflows/commit/9cdc42b48e585769a1f089b56bde2a5fa45b6191))
+
 ## [2.0.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v1.0.0...v2.0.0) (2022-07-25)
 
 
