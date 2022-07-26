@@ -94,7 +94,7 @@ jobs:
       uses: fjogeleit/yaml-update-action@main
       with:
         valueFile: "${{ inputs.helm_chart_root_path }}/values.yaml"
-        propertyPath: "${{ image_repository_property_path }}"
+        propertyPath: "${{ inputs.image_repository_property_path }}"
         value: "${{ inputs.image_repository }}"
         commitChange: false
         updateFile: true
