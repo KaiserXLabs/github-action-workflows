@@ -1,0 +1,13 @@
+# Install:    helm upgrade --install --namespace inno-fpp inno-cronjobs ./helm --set image.tag=<Short Commit SHA or Release Tag>
+# Uninstall:  helm uninstall --namespace inno-fpp inno-cronjobs
+schedule: "*/5 * * * *"
+
+image:
+  repository: ""
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+
+resources: {}

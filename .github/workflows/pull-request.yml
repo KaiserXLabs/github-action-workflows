@@ -16,10 +16,9 @@ jobs:
           echo "::set-output name=value::${GITHUB_REPOSITORY_OWNER,,}"
         env:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-  test-build-and-push:
+  test-build-and-push-docker-image:
     needs:
     - lower-case-owner-name
-    name: "Test build and push docker image"
     uses: ./.github/workflows/build-and-push-docker-image.yml
     with:
       repository_name: hello
@@ -28,6 +27,21 @@ jobs:
       version_tag: 0.0.0
       dockerfile_path: test/Dockerfile
       dockerfile_context_path: test
+    secrets:
+      registry_username: '$'
+      registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  test-package-and-push-helm-chart:
+    needs:
+    - lower-case-owner-name
+    uses: ./.github/workflows/package-and-push-helm-chart.yml
+    with:
+      registry_name: ghcr.io/${{ needs.lower-case-owner-name.outputs.lower_case_github_repository_owner }}
+      release_created: false
+      version_tag: 0.0.0
+      image_tag_property_path: image.tag
+      helm_chart_root_path: test/chart
+      image_repository: ghcr.io/${{ needs.lower-case-owner-name.outputs.lower_case_github_repository_owner }}/hello
     secrets:
       registry_username: '$'
       registry_password: ${{ secrets.GITHUB_TOKEN }}
