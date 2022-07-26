@@ -34,9 +34,9 @@ Builds a `Dockerfile` and pushes the built container to the passed repository at
 
 ### Outputs
 
-| Output      | Always | Description                                                                                       |
-| ----------- | ------ | ------------------------------------------------------------------------------------------------- |
-| `image_tag` | yes    | Either the short SHA if `release_created` is `false` or the `version_tag` (see [Inputs](#inputs)) |
+| Output      | Always | Description                                                               |
+| ----------- | ------ | ------------------------------------------------------------------------- |
+| `image_tag` | yes    | Either the short SHA if `release_created` is `false` or the `version_tag` |
 
 ### Usage
 
@@ -93,7 +93,7 @@ jobs:
 
 <!-- x-release-please-start-version -->
 
-`KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@main`
+`KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@v2.1.0`
 
 <!-- x-release-please-end -->
 
@@ -117,8 +117,9 @@ jobs:
 
 ### Outputs
 
-| Output | Always | Description |
-| ------ | ------ | ----------- |
+| Output      | Always | Description                                                                             |
+| ----------- | ------ | --------------------------------------------------------------------------------------- |
+| `chart_tag` | yes    | Either the `version_tag+short SHA` if `release_created` is `false` or the `version_tag` |
 
 ### Usage
 
