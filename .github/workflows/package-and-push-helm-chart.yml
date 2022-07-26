@@ -32,7 +32,10 @@ on:
         required: false
         type: string
         default: image.repository
-
+    outputs:
+      chart_tag:
+        description: "Either the version_tag+short SHA if release_created is false or version_tag"
+        value: ${{ jobs.packageAndPushHelmChart.steps.chart_tag.outputs.value }}
     secrets:
       registry_username:
         required: true
@@ -52,7 +55,7 @@ jobs:
     - id: short_sha
       run: echo "::set-output name=value::$(git rev-parse --short ${{ github.sha }})"
 
-    - id: final_version_tag
+    - id: chart_tag
       run: echo "::set-output name=value::${{ inputs.release_created && inputs.version_tag || format('{0}+{1}', inputs.version_tag, steps.short_sha.outputs.value) }}"
 
     - name: Run read-yaml action
@@ -67,7 +70,7 @@ jobs:
       with:
         valueFile: "${{ inputs.helm_chart_root_path }}/Chart.yaml"
         propertyPath: 'appVersion'
-        value: "${{ steps.final_version_tag.outputs.value }}"
+        value: "${{ steps.chart_tag.outputs.value }}"
         commitChange: false
         updateFile: true
 
@@ -76,7 +79,7 @@ jobs:
       with:
         valueFile: "${{ inputs.helm_chart_root_path }}/Chart.yaml"
         propertyPath: 'version'
-        value: "${{ steps.final_version_tag.outputs.value }}"
+        value: "${{ steps.chart_tag.outputs.value }}"
         commitChange: false
         updateFile: true
 
@@ -85,7 +88,7 @@ jobs:
       with:
         valueFile: "${{ inputs.helm_chart_root_path }}/values.yaml"
         propertyPath: "${{ inputs.image_tag_property_path || inputs.image_tag_value_property_path || 'global.image.tag' }}"
-        value: "${{ inputs.release_created && steps.final_version_tag.outputs.value || steps.short_sha.outputs.value }}"
+        value: "${{ inputs.release_created && steps.chart_tag.outputs.value || steps.short_sha.outputs.value }}"
         commitChange: false
         updateFile: true
 
@@ -101,5 +104,5 @@ jobs:
 
     - run: helm package ${{ inputs.helm_chart_root_path }}
 
-    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ steps.final_version_tag.outputs.value }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path || '/helm' }}" 
+    - run: "helm push ${{ steps.chart-name.outputs.data }}-${{ steps.chart_tag.outputs.value }}.tgz oci://${{ inputs.registry_name }}${{ inputs.registry_url_path || '/helm' }}" 
 
