@@ -35,7 +35,7 @@ on:
     outputs:
       chart_tag:
         description: "Either the version_tag+short SHA if release_created is false or version_tag"
-        value: ${{ jobs.packageAndPushHelmChart.steps.chart_tag.outputs.value }}
+        value: ${{ jobs.packageAndPushHelmChart.outputs.chart_tag }}
     secrets:
       registry_username:
         required: true
@@ -46,6 +46,8 @@ jobs:
   packageAndPushHelmChart:
     name: "Package and push helm chart"
     runs-on: ubuntu-20.04
+    outputs:
+      chart_tag: ${{ steps.chart_tag.outputs.value }}
     steps:
     
     - uses: actions/checkout@v3
