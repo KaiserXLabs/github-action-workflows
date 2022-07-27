@@ -26,7 +26,7 @@ on:
     outputs:
       image_tag:
         description: "Either the short SHA if release_created is false or version_tag"
-        value: ${{ jobs.buildAndPushDockerImage.steps.image_tag.outputs.value }}
+        value: ${{ jobs.build-and-push-docker-image.outputs.image_tag }}
     secrets:
       registry_username:
         required: true
@@ -34,10 +34,11 @@ on:
         required: true
 
 jobs:
-  buildAndPushDockerImage:
+  build-and-push-docker-image:
     name: "Build and Push"
     runs-on: ubuntu-20.04
-
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.value }}
     steps:
       - run: echo "release_created ${{ inputs.release_created }}"
       - run: echo "version_tag ${{ inputs.version_tag }}"
