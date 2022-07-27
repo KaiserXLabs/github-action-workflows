@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.1.0...v2.1.1) (2022-07-27)
+
+
+### Bug Fixes
+
+* output values not set ([#6](https://github.com/KaiserXLabs/github-action-workflows/issues/6)) ([a23866a](https://github.com/KaiserXLabs/github-action-workflows/commit/a23866a5ad922440a6837287d0a5c89ce562570c))
+
 ## [2.1.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.0.0...v2.1.0) (2022-07-26)
 
 
