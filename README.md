@@ -10,7 +10,7 @@ Builds a `Dockerfile` and pushes the built container to the passed repository at
 
 <!-- x-release-please-start-version -->
 
-`KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v2.1.0`
+`KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v2.1.1`
 
 <!-- x-release-please-end -->
 
@@ -74,7 +74,7 @@ jobs:
   buildAndPushDockerImage:
     name: "Build and push docker image"
     needs: release-please
-    uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v2.1.0 # x-release-please-version
+    uses: KaiserXLabs/github-action-workflows/.github/workflows/build-and-push-docker-image.yml@v2.1.1 # x-release-please-version
     with:
       repository_name: hello-world
       registry_name: ghcr.io/${{ github.repository_owner }}
@@ -95,7 +95,7 @@ Opinionated version of packaging and pushing a helm chart to an OCI registry, wh
 
 <!-- x-release-please-start-version -->
 
-`KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@v2.1.0`
+`KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@v2.1.1`
 
 <!-- x-release-please-end -->
 
@@ -143,7 +143,7 @@ jobs:
   packageAndPushHelmChart:
     name: "Build and push helm chart"
     needs: release-please
-    uses: KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@v2.1.0 # x-release-please-version
+    uses: KaiserXLabs/github-action-workflows/.github/workflows/package-and-push-helm-chart.yml@v2.1.1 # x-release-please-version
     with:
       registry_name: my-docker-registry.example.io
       release_created: ${{ needs.release-please.outputs.release_created == 'true' }}
