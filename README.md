@@ -89,6 +89,8 @@ jobs:
 
 ## Package and publish helm charts
 
+Opinionated version of packaging and pushing a helm chart to an OCI registry, where the chart's `version` and `appVersion` are getting the same `chart_tag`.
+
 ### Workflow name
 
 <!-- x-release-please-start-version -->
@@ -99,14 +101,17 @@ jobs:
 
 ### Inputs
 
-| Input                           | Type    | Required                       | Description                                                                                                                                                               |
-| ------------------------------- | ------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `registry_name`                 | string  | yes                            | The name of the oci registry, for example `ghcr.io/kaiserxlabs`                                                                                                           |
-| `release_created`               | boolean | yes                            | Whether this workflow should push a pre-release appending the short SHA to the `version_tag` (for example `1.1.3+9a34175`) or push a release using only the `version_tag` |
-| `version_tag`                   | string  | only if release_created is yes | The version tag if `release_created` is `true`                                                                                                                            |
-| `registry_url_path`             | string  | no                             | Optional repository path at the oci registry. Default value is `/helm`                                                                                                    |
-| `image_tag_value_property_path` | string  | no                             | Optional image tag path. Default value is `global.image.tag`                                                                                                              |
-| `helm_chart_root_path`          | string  | no                             | Optional helm chart path relative to the repository root. Default value is `./charts`                                                                                     |
+| Input                            | Type    | Required                       | Description                                                                                                                                                               |
+| -------------------------------- | ------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `registry_name`                  | string  | yes                            | The name of the oci registry, for example `ghcr.io/kaiserxlabs`                                                                                                           |
+| `release_created`                | boolean | yes                            | Whether this workflow should push a pre-release appending the short SHA to the `version_tag` (for example `1.1.3+9a34175`) or push a release using only the `version_tag` |
+| `version_tag`                    | string  | only if release_created is yes | The version tag if `release_created` is `true`                                                                                                                            |
+| `registry_url_path`              | string  | no                             | Optional repository path at the oci registry. Default value is `/helm`                                                                                                    |
+| `image_repository_property_path` | string  | no                             | Optional image repository property path. Default value is `image.repository`                                                                                              |
+| `image_repository`               | string  | no                             | Optional image repository value. Default value is `""`. If not set, the `values.yaml` is not updated, even if `image_repository_property_path` is set                     |
+| `image_tag_value_property_path`  | string  | no                             | [DEPRECATED] Use `image_tag_property_path` instead.                                                                                                                       |
+| `image_tag_property_path`        | string  | no                             | Optional image tag property path. Default value is `global.image.tag`                                                                                                     |
+| `helm_chart_root_path`           | string  | no                             | Optional helm chart path relative to the repository root. Default value is `./charts`                                                                                     |
 
 ### Secrets
 
