@@ -31,6 +31,13 @@ jobs:
       registry_username: '$'
       registry_password: ${{ secrets.GITHUB_TOKEN }}
 
+  validate-build-and-push-docker-image-outputs:
+    needs:
+    - test-build-and-push-docker-image
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "${{ needs.test-build-and-push-docker-image.outputs.image_tag }}"
+
   test-package-and-push-helm-chart:
     needs:
     - lower-case-owner-name
@@ -45,3 +52,11 @@ jobs:
     secrets:
       registry_username: '$'
       registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  validate-package-and-push-helm-chart-outputs:
+    needs:
+    - test-package-and-push-helm-chart
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "${{ needs.test-package-and-push-helm-chart.outputs.chart_tag }}"
+
