@@ -34,7 +34,7 @@ on:
         default: image.repository
     outputs:
       chart_tag:
-        description: "Either the version_tag+short SHA if release_created is false or version_tag"
+        description: "Either the version_tag-short SHA if release_created is false or version_tag"
         value: ${{ jobs.packageAndPushHelmChart.outputs.chart_tag }}
     secrets:
       registry_username:
@@ -58,7 +58,7 @@ jobs:
       run: echo "::set-output name=value::$(git rev-parse --short ${{ github.sha }})"
 
     - id: chart_tag
-      run: echo "::set-output name=value::${{ inputs.release_created && inputs.version_tag || format('{0}+{1}', inputs.version_tag, steps.short_sha.outputs.value) }}"
+      run: echo "::set-output name=value::${{ inputs.release_created && inputs.version_tag || format('{0}-{1}', inputs.version_tag, steps.short_sha.outputs.value) }}"
 
     - name: Run read-yaml action
       id: chart-name

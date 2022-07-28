@@ -104,8 +104,8 @@ Opinionated version of packaging and pushing a helm chart to an OCI registry, wh
 | Input                            | Type    | Required | Description                                                                                                                                                               |
 | -------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `registry_name`                  | string  | yes      | The name of the oci registry, for example `ghcr.io/kaiserxlabs`                                                                                                           |
-| `release_created`                | boolean | yes      | Whether this workflow should push a pre-release appending the short SHA to the `version_tag` (for example `1.1.3+9a34175`) or push a release using only the `version_tag` |
-| `version_tag`                    | string  | yes      | The version tag that is used either in the build tag of a pre-release if `release_created` is `false` (for example `1.1.3+9a34175`) or as the actual release tag          |
+| `release_created`                | boolean | yes      | Whether this workflow should push a pre-release appending the short SHA to the `version_tag` (for example `1.1.3-9a34175`) or push a release using only the `version_tag` |
+| `version_tag`                    | string  | yes      | The version tag that is used either in the build tag of a pre-release if `release_created` is `false` (for example `1.1.3-9a34175`) or as the actual release tag          |
 | `registry_url_path`              | string  | no       | Optional repository path at the oci registry. Default value is `/helm`                                                                                                    |
 | `image_repository_property_path` | string  | no       | Optional image repository property path. Default value is `image.repository`                                                                                              |
 | `image_repository`               | string  | no       | Optional image repository value. Default value is `""`. If not set, the `values.yaml` is not updated, even if `image_repository_property_path` is set                     |
@@ -124,7 +124,7 @@ Opinionated version of packaging and pushing a helm chart to an OCI registry, wh
 
 | Output      | Always | Description                                                                             |
 | ----------- | ------ | --------------------------------------------------------------------------------------- |
-| `chart_tag` | yes    | Either the `version_tag+short SHA` if `release_created` is `false` or the `version_tag` |
+| `chart_tag` | yes    | Either the `version_tag-short SHA` if `release_created` is `false` or the `version_tag` |
 
 ### Usage
 
