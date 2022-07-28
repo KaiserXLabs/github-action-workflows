@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.2.0...v3.0.0) (2022-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* **helm:** fixes that `chart_tag`s like `1.4.0+dc75aba` are not deployable with ArgoCD, so replaced the plus `+` with a dash `-`
+
+### Features
+
+* **docs:** add major versioning to readme ([#13](https://github.com/KaiserXLabs/github-action-workflows/issues/13)) ([22b0c1c](https://github.com/KaiserXLabs/github-action-workflows/commit/22b0c1c5281b64ba108f460979b4a17a137c3046))
+
+
+### Bug Fixes
+
+* **helm:** make chart version string deployable ([09b3b17](https://github.com/KaiserXLabs/github-action-workflows/commit/09b3b17d86aa3b062f4f33685d29882702495feb))
+
 ## [2.2.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.1.1...v2.2.0) (2022-07-28)
 
 
