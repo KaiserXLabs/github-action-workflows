@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.1.1...v2.2.0) (2022-07-28)
+
+
+### Features
+
+* **ci:** add major and minor version tagging when releasing ([#8](https://github.com/KaiserXLabs/github-action-workflows/issues/8)) ([4652691](https://github.com/KaiserXLabs/github-action-workflows/commit/4652691d7f4731c9d6d1bf235acd4337c9091a0c))
+
 ## [2.1.1](https://github.com/KaiserXLabs/github-action-workflows/compare/v2.1.0...v2.1.1) (2022-07-27)
 
 
