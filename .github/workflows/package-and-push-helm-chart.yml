@@ -55,10 +55,10 @@ jobs:
       run: echo ${{ secrets.registry_password }} | helm registry login ${{ inputs.registry_name }} --username ${{ secrets.registry_username }} --password-stdin
 
     - id: short_sha
-      run: echo "::set-output name=value::$(git rev-parse --short ${{ github.sha }})"
+      run: echo "value=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
 
     - id: chart_tag
-      run: echo "::set-output name=value::${{ inputs.release_created && inputs.version_tag || format('{0}-{1}', inputs.version_tag, steps.short_sha.outputs.value) }}"
+      run: echo "value=${{ inputs.release_created && inputs.version_tag || format('{0}-{1}', inputs.version_tag, steps.short_sha.outputs.value) }}" >> $GITHUB_OUTPUT
 
     - name: Run read-yaml action
       id: chart-name

@@ -48,7 +48,7 @@ jobs:
 
       - name: Generate a short SHA
         id: short_sha
-        run: echo "::set-output name=value::$(git rev-parse --short ${{ github.sha }})"
+        run: echo "value=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
 
       - name: "Generate the image tag"
         id: image_tag
